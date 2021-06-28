@@ -37,6 +37,12 @@ router.get('/:id', (req, res) => {
 
 // create new product
 router.post('/', (req, res) => {
+ Product.create({
+      product_name: req.body.product_name,
+      price: req.body.price,
+      stock:req.body.stock,
+      tagIds: req.body.tagIds,  
+    });
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -110,6 +116,21 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
+ try {
+  let productData = Product.destroy({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (!productData) {
+    res.status(404).json(productData);
+    return;
+  }
+  res.json(200).json(productData);
+ } catch (err) {
+   res.status(500).json(err);
+ };
+
   // delete one product by its `id` value
 });
 
