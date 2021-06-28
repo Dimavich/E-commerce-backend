@@ -3,12 +3,12 @@ const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
 
-router.get('/', (req, res) => {
+router.get('/',async (req, res) => {
   try{
     let categoryData = await Category.findAll({
       include: [{ model: Product }],
     });
-    res.status(200).json(categorysData);
+    res.status(200).json(categoryData);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -16,24 +16,24 @@ router.get('/', (req, res) => {
   // be sure to include its associated Products
 });
 
-router.get('/:id', (req, res) => {
-try {
-  let categoryData = await Category.findByPk(req.params.id,{
-    include: [{model: Product}],
-  });
-  if(!categoryData) {
-    res.status(404).json({message: `No such category exists`});
-    return;
+router.get('/:id',async (req, res) => {
+  try {
+    let categoryData = await Category.findByPk(req.params.id,{
+      include: [{model: Product}],
+    });
+    if(!categoryData) {
+      res.status(404).json({message: `No such category exists`});
+      return;
+    }
+    res.status(200).json(categoryData);
+  } catch (err) {
+    res.status(500).json(err);
   }
-  res.status(200).json(categoryData);
-} catch (err) {
-  res.status(500).json(err);
-}
   // find one category by its `id` value
   // be sure to include its associated Products
 });
 
-router.post('/', (req, res) => {
+router.post('/', async(req, res) => {
   try {
     let newCategory = await Category.create({
       category_name: req.body.category_name,
@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
   // create a new category
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async(req, res) => {
   try {
     let categoryData = await Category.update(req.body,{
       where: {
@@ -61,7 +61,7 @@ router.put('/:id', (req, res) => {
   // update a category by its `id` value
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async(req, res) => {
   try {
     let categoryData = await Category.destroy({
       where: {

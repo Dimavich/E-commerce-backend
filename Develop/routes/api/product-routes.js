@@ -4,10 +4,11 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get('/', async(req, res) => {
   try{
-    let productData = await Category.findAll({
-      include: [{ model: Category },{ model: Tag }],
+    let productData = await Product.findAll({
+      attributes: ['id', 'product_name', 'price', 'stock'],
+      include: [{model: Category, include: [{model: Tag}]}]
     });
     res.status(200).json(productData);
   } catch (err) {
@@ -18,10 +19,11 @@ router.get('/', (req, res) => {
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get('/:id', async(req, res) => {
   try {
-    let productData = await Category.findByPk(req.params.id,{
-      include: [{ model: Category },{ model: Tag }],
+    let productData = await Product.findByPk(req.params.id,{
+      attributes: ['id', 'product_name', 'price', 'stock'],
+      include: [{model: Category, include: [{model: Tag}]}]
     });
     if(!productData) {
       res.status(404).json({message: `No such Product exists`});
